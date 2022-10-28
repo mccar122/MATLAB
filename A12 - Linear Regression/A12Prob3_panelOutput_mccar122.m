@@ -1,0 +1,82 @@
+function A12Prob3_panelOutput_mccar122
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ENGR 132 
+% Program Description 
+%create a model of the data provided that can be
+%used to estimate a panel’s output for a range of peak sun
+%hours
+%
+% Function Call
+%A12Prob2_panelOutput_mccar122(peak_hours)
+%
+% Input Arguments
+%value for peak sun hours
+%
+% Output Arguments
+%a predicted electrical output value for the input peak sun value
+%
+% Assignment Information
+%   Assignment:     A12, Problem 3
+%   Author:         Conor McCarthy, mccar122@purdue.edu
+%   Academic Integrity:
+%     [] I worked with one or more peers but our collaboration
+%        maintained academic integrity.
+%     Peers I worked with: Name, login@purdue [repeat for each]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ____________________
+%% INITIALIZATION
+
+%imports and prepares data to be analzyed
+data = readtable("Data_panelX5_output_measurements.csv");
+Peak_Sun_Hours_Table = data(:,1);
+Peak_Sun_Hours = table2array(Peak_Sun_Hours_Table);
+Panel_Output_Table = data(:,2);
+Panel_Output = table2array(Panel_Output_Table);
+Peak_Hour = input("Peak Sun Hours: ");
+
+%% ____________________
+%% REGRESSION CALCULATIONS
+
+%The following code calculates regression statistics helpful in studying
+%the model of the data provided
+Coefficients = polyfit(Peak_Sun_Hours, Panel_Output, 1);
+Panel_Output_Mean = (sum(Panel_Output)) / numel(Panel_Output);
+Panel_Output_PV = Coefficients(1) * Peak_Sun_Hours + Coefficients(2);
+SSE = sum((Panel_Output - Panel_Output_PV).^2);
+SST = sum((Panel_Output - Panel_Output_Mean).^2);
+R_Squared = 1 - (SSE/SST);
+
+Model_Output = Coefficients(1) * Peak_Hour + Coefficients(2);
+
+%% ____________________
+%% REGRESSION TEXT & FIGURE DISPLAYS
+
+%This code prints regression stats and plots a graph with both data and
+%model line
+fprintf("Model SSE: %.2f Model SST: %.2f Model R^2: %.2f \n", SSE, SST, R_Squared)
+plot(Peak_Sun_Hours, Panel_Output, "k", Peak_Sun_Hours, Panel_Output_PV, "b")
+xlabel("Peak Sun Hours")
+ylabel("Power Ouput")
+legend("Data", "Model")
+%% ____________________
+%% PREDICTION CALCULATIONS AND DISPLAY
+
+%calculates and prints user input estimated power output
+fprintf("The predicted electrical output is %.2f kWh", Model_Output)
+end
+
+%% ____________________
+%% RESULTS
+
+
+
+%% ____________________
+%% ACADEMIC INTEGRITY STATEMENT
+% I have not used source code obtained from any other unauthorized
+% source, either modified or unmodified.  Neither have I provided
+% access to my code to another. The function I am submitting
+% is my own original work.
+
+
+
